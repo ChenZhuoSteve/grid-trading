@@ -104,7 +104,7 @@ import Grid from "./lib/grid";
 import GridConfig from "./lib/gridConfig";
 @Component({
   filters: {
-    toFixed(value: number, digits = 2) {
+    toFixed(value: number, digits = 3) {
       if (!value) {
         return "";
       }
