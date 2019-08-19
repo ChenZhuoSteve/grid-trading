@@ -51,13 +51,18 @@ export default class Grid {
      * 存留利润
      */
     private retainProfitValue = 0;
+    /**
+     * 成本价格
+     */
+    private cost = 0;
     constructor(
         name: string,
         index: number,
         gear: number,
         buyPrice: number,
         sellOutPrice: number,
-        buyAmount: number
+        buyAmount: number,
+        cost: number
     ) {
         this.name = name;
         this.index = index;
@@ -70,6 +75,7 @@ export default class Grid {
         this.sellValue = sellOutPrice * this.sellAmount;
         this.profitValue = this.sellValue - this.buyValue;
         this.profitPercentage = (this.profitValue / this.buyValue) * 100;
+        this.cost = cost;
     }
     /**
      * 保留利润
@@ -103,5 +109,9 @@ export default class Grid {
 
     public getProfitValue() {
         return this.profitValue;
+    }
+
+    public getBuyAmount() {
+        return this.buyAmount;
     }
 }

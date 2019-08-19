@@ -5,57 +5,49 @@
         <div class="group" v-for="(item,index) in config" :key="item.name">
           <div class="item">
             <label class="label">网格名称</label>
-            <input :value="item.name" disabled>
+            <input :value="item.name" disabled />
           </div>
           <div class="item">
             <label class="label">价格</label>
-            <input v-model="item.price" type="number" :disabled="index!=0">￥
+            <input v-model.number="item.price" :disabled="index!=0" />￥
           </div>
           <div class="item">
             <label class="label">网格百分比</label>
-            <input v-model="item.percentage" type="number">%
+            <input v-model.number="item.percentage" />%
           </div>
           <div class="item">
-            <label class="label">网格金额</label>
-            <input v-model="item.value" type="number">￥
+            <label class="label">购买份数</label>
+            <input v-model.number="item.buyAmount" />
           </div>
           <div class="item">
             <label class="label">网格数</label>
-            <input v-model="item.gridCount" type="number">
+            <input v-model.number="item.gridCount" />
           </div>
           <div class="item">
             <label class="label">倍数</label>
-            <input
-              v-model="item.retainProfitMultiple"
-              type="number"
-              :disabled="!item.isRetainProfit"
-            >
+            <input v-model.number="item.retainProfitMultiple" :disabled="!item.isRetainProfit" />
           </div>
           <div class="item">
             <label class="label">加码百分比</label>
-            <input v-model="item.morePercentage" type="number" :disabled="!item.isMore">
+            <input v-model.number="item.morePercentage" :disabled="!item.isMore" />
           </div>
           <div class="item">
-            <input type="checkbox" v-model="item.isRetainProfit">
+            <input type="checkbox" v-model="item.isRetainProfit" />
             留利润
-            <input type="checkbox" v-model="item.isMore">
+            <input type="checkbox" v-model="item.isMore" />
             逐格加码
           </div>
           <div class="item">
             <label class="label">所需资金</label>
-            <input :value="totalValue(index)" type="number" disabled>￥
+            <input :value="totalValue(index)|toFixed" disabled />￥
           </div>
           <div class="item">
             <label class="label">总盈利金额</label>
-            <input :value="totalProfitValue(index)|toFixed" type="number" disabled>￥
+            <input :value="totalProfitValue(index)|toFixed" disabled />￥
           </div>
           <div class="item">
             <label class="label">总盈利比例</label>
-            <input
-              :value="totalProfitValue(index)/totalValue(index)*100|toFixed"
-              type="number"
-              disabled
-            >%
+            <input :value="totalProfitValue(index)/totalValue(index)*100|toFixed" disabled />%
           </div>
         </div>
       </div>
@@ -66,6 +58,7 @@
           <th>档位</th>
           <th>买入价格</th>
           <th>卖出价格</th>
+          <th>成本</th>
           <th>买入数量</th>
           <th>买入金额</th>
           <th>卖出数量</th>
@@ -82,6 +75,7 @@
             <td>{{item.gear|toFixed}}</td>
             <td>{{item.buyPrice|toFixed}}￥</td>
             <td>{{item.sellOutPrice|toFixed}}￥</td>
+            <td>{{item.cost|toFixed}}￥</td>
             <td>{{item.buyAmount|toFixed(0)}}</td>
             <td>{{item.buyValue|toFixed}}￥</td>
             <td>{{item.sellAmount|toFixed(0)}}</td>
@@ -150,14 +144,29 @@ export default class App extends Vue {
         }
         const buyPrice = configItem.price * gear; // 买入价格
         const sellOutPrice = configItem.price * (gear + tempPer); // 卖出价格
-        let buyAmount = 0; // 买入数量
+        let buyAmount = configItem.buyAmount; // 买入数量
+        let cost = 0;
         // 加码
         if (configItem.isMore) {
           buyAmount =
-            (configItem.value * (1 + (configItem.morePercentage / 100) * i)) /
-            buyPrice;
+            configItem.buyAmount * (1 + (configItem.morePercentage / 100) * i);
+        }
+        if (i === 0) {
+          cost = buyPrice;
         } else {
-          buyAmount = configItem.value / buyPrice;
+          const tempBuyCost =
+            tempList.reduce(
+              (accumulator, gridItem) =>
+                accumulator + gridItem.getBuyAmount() * gridItem.getBuyPrice(),
+              0
+            ) +
+            buyPrice * buyAmount;
+          const tempBuyAmount =
+            tempList.reduce(
+              (accumulator, gridItem) => accumulator + gridItem.getBuyAmount(),
+              0
+            ) + buyAmount;
+          cost = tempBuyCost / tempBuyAmount;
         }
         const item = new Grid(
           configItem.name,
@@ -165,7 +174,8 @@ export default class App extends Vue {
           gear,
           buyPrice,
           sellOutPrice,
-          buyAmount
+          buyAmount,
+          cost
         );
         if (configItem.isRetainProfit) {
           item.retainProfit(configItem.retainProfitMultiple);
@@ -187,6 +197,8 @@ export default class App extends Vue {
       this.config[0].price * (1 - this.config[1].percentage / 100);
     this.config[2].price =
       this.config[0].price * (1 - this.config[2].percentage / 100);
+    this.config[1].price = Number.parseFloat(this.config[1].price.toFixed(3));
+    this.config[2].price = Number.parseFloat(this.config[2].price.toFixed(3));
   }
   public totalValue(index: number) {
     return this.gridList[index].reduce(

@@ -12,9 +12,9 @@ export default class GridConfig {
      */
     public percentage = 5;
     /**
-     * 网格金额
+     * 购买份数
      */
-    public value = 2000;
+    public buyAmount = 1000;
     /**
      * 网格数
      */
