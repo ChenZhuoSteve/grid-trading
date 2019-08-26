@@ -123,6 +123,25 @@ export default class App extends Vue {
     this.config[2].percentage = 30;
     this.config[2].gridCount = 0;
   }
+  public mounted() {
+    this.$watch(
+      function() {
+        return this.config[0].price;
+      },
+      function() {
+        this.config[1].price =
+          this.config[0].price * (1 - this.config[1].percentage / 100);
+        this.config[2].price =
+          this.config[0].price * (1 - this.config[2].percentage / 100);
+        this.config[1].price = Number.parseFloat(
+          this.config[1].price.toFixed(3)
+        );
+        this.config[2].price = Number.parseFloat(
+          this.config[2].price.toFixed(3)
+        );
+      }
+    );
+  }
   /**
    * @returns {Grid[][]}
    */
@@ -190,15 +209,6 @@ export default class App extends Vue {
     return this.gridList.flat().sort((a, b) => {
       return b.getBuyPrice() - a.getBuyPrice();
     });
-  }
-  @Watch("config", { immediate: true, deep: true })
-  public onPercentageChanged() {
-    this.config[1].price =
-      this.config[0].price * (1 - this.config[1].percentage / 100);
-    this.config[2].price =
-      this.config[0].price * (1 - this.config[2].percentage / 100);
-    this.config[1].price = Number.parseFloat(this.config[1].price.toFixed(3));
-    this.config[2].price = Number.parseFloat(this.config[2].price.toFixed(3));
   }
   public totalValue(index: number) {
     return this.gridList[index].reduce(
