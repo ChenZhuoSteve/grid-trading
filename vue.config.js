@@ -1,5 +1,5 @@
 module.exports = {
-    publicPath: "/grid-trading/",
+    publicPath: "/",
     outputDir: "docs",
     devServer: {
         port: 9000

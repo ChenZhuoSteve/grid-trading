@@ -7,7 +7,7 @@
         href="https://github.com/ChenZhuoSteve/grid-trading"
         title="查看源代码"
       >
-        <img class="github-icon" src="GitHub-Mark-32px.png" />查看源码
+        <img class="github-icon" src="./assets/GitHub-Mark-32px.png" />查看源码
       </a>
     </div>
     <div class="section">
