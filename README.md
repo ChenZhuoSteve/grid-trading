@@ -1,5 +1,7 @@
 # grid-trading
 
+网格交易策略生成器,参考了ETF拯救世界的文章
+
 ## Project setup
 ```
 yarn install
