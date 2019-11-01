@@ -1,5 +1,15 @@
 <template>
   <div id="app">
+    <div class="top-header">
+      网格交易策略生成器,参考了ETF拯救世界的文章
+      <a
+        class="repo-link"
+        href="https://github.com/ChenZhuoSteve/grid-trading"
+        title="查看源代码"
+      >
+        <img class="github-icon" src="GitHub-Mark-32px.png" />查看源码
+      </a>
+    </div>
     <div class="section">
       <div class="header">
         <div class="group" v-for="(item,index) in config" :key="item.name">
@@ -237,6 +247,19 @@ export default class App extends Vue {
   display: flex;
   flex-direction: column;
   align-items: center;
+  .top-header {
+    font-size: 1.5em;
+  }
+  .repo-link {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    margin-left: 24px;
+  }
+  .github-icon {
+    width: 16px;
+  }
 }
 .section {
   .header {
