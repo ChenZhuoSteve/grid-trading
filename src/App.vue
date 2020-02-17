@@ -13,7 +13,7 @@
     <div class="section">
       <div class="header">
         <div class="group" v-for="(item,index) in config" :key="item.name">
-          <div class="item">
+          <div class="title">
             <label class="label">网格名称</label>
             <input :value="item.name" disabled />
           </div>
@@ -42,12 +42,6 @@
             <input v-model.number="item.morePercentage" :disabled="!item.isMore" />
           </div>
           <div class="item">
-            <input type="checkbox" v-model="item.isRetainProfit" />
-            留利润
-            <input type="checkbox" v-model="item.isMore" />
-            逐格加码
-          </div>
-          <div class="item">
             <label class="label">所需资金</label>
             <input :value="totalValue(index)|toFixed" disabled />￥
           </div>
@@ -59,7 +53,16 @@
             <label class="label">总盈利比例</label>
             <input :value="totalProfitValue(index)/totalValue(index)*100|toFixed" disabled />%
           </div>
+          <div class="item">
+            <input type="checkbox" v-model="item.isRetainProfit" />
+            留利润
+            <input type="checkbox" v-model="item.isMore" />
+            逐格加码
+          </div>
         </div>
+      </div>
+      <div class="add-grid">
+        <button @click="addGrid">增加网格</button>
       </div>
       <table class="table">
         <thead>
@@ -123,15 +126,7 @@ export default class App extends Vue {
   private config: GridConfig[];
   constructor() {
     super();
-    this.config = [
-      new GridConfig("小网"),
-      new GridConfig("中网"),
-      new GridConfig("大网")
-    ];
-    this.config[1].percentage = 15;
-    this.config[1].gridCount = 0;
-    this.config[2].percentage = 30;
-    this.config[2].gridCount = 0;
+    this.config = [new GridConfig("小网")];
   }
   public mounted() {
     this.$watch(
@@ -239,6 +234,28 @@ export default class App extends Vue {
       "big-grid": grid.getName() === "大网"
     };
   }
+  public addGrid() {
+    const config = this.config[0];
+    if (this.config.length === 1) {
+      const newConfig = new GridConfig("中网");
+      newConfig.price = config.price;
+      newConfig.buyAmount = config.buyAmount;
+      newConfig.isRetainProfit = config.isRetainProfit;
+      newConfig.isMore = config.isMore;
+      newConfig.percentage = 15;
+      newConfig.gridCount = 10;
+      this.config.push(newConfig);
+    } else if (this.config.length === 2) {
+      const newConfig = new GridConfig("大网");
+      newConfig.price = config.price;
+      newConfig.buyAmount = config.buyAmount;
+      newConfig.isRetainProfit = config.isRetainProfit;
+      newConfig.isMore = config.isMore;
+      newConfig.percentage = 30;
+      newConfig.gridCount = 5;
+      this.config.push(newConfig);
+    }
+  }
 }
 </script>
 
@@ -264,15 +281,23 @@ export default class App extends Vue {
 .section {
   .header {
     display: flex;
+    flex-direction: column;
     margin-bottom: 6px;
     .group {
       margin: 4px 6px;
+      border: 1px solid black;
       .label {
         margin: 4px;
         display: inline-block;
         min-width: 100px;
       }
+      .item {
+        display: inline-block;
+      }
     }
+  }
+  .add-grid {
+    margin: 6px;
   }
   .table {
     border: 1px solid #ddd;
