@@ -166,8 +166,12 @@ export default class App extends Vue {
         if (gear < 0) {
           continue;
         }
-        const buyPrice = configItem.price * gear; // 买入价格
-        const sellOutPrice = configItem.price * (gear + tempPer); // 卖出价格
+        const buyPrice = Number.parseFloat(
+          (configItem.price * gear).toFixed(3)
+        ); // 买入价格
+        const sellOutPrice = Number.parseFloat(
+          (configItem.price * (gear + tempPer)).toFixed(3)
+        ); // 卖出价格
         let buyAmount = configItem.buyAmount; // 买入数量
         let cost = 0;
         // 加码
